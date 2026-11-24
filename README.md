@@ -1,7 +1,7 @@
 
 # J.A.R.V.I.S. // Neural Core HUD (MK-VII)
 
-A local-first AI desktop assistant and voice-activated command HUD built with Node.js, Google Gemini function calling, and Fish Audio voice synthesis. Engineered for real-time Windows OS automation, file-system management, system diagnostics, and live web search.
+Created a local-first AI desktop assistant and voice-activated command HUD built with Node.js, Google Gemini function calling, and Fish Audio voice synthesis. Build in a method of Ai Assisted codinng created for real-time Windows OS automation, file-system management, system diagnostics, and live web search.
 
 ---
 
