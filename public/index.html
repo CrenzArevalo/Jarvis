@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>J.A.R.V.I.S. // Neural Core HUD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@500;700;800&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  </head>
+  <body>
+
+    <div id="canvasContainer" aria-label="Interactive 3D Neural Particle Core"></div>
+
+    <div class="hud-vignette" aria-hidden="true"></div>
+    <div class="hud-reticle" aria-hidden="true">
+      <span class="corner tl"></span>
+      <span class="corner tr"></span>
+      <span class="corner bl"></span>
+      <span class="corner br"></span>
+    </div>
+
+    <header class="site-header">
+      <div class="brand">
+        <span class="reactor-node" id="reactorNode"></span>
+        <div class="brand-text">
+          <span class="brand-title">J.A.R.V.I.S.</span>
+          <span class="brand-sub">STARK OS // NEURAL MATRIX</span>
+        </div>
+      </div>
+
+      <nav class="nav-links" aria-label="HUD Views">
+        <button type="button" class="nav-btn active" data-view="core">CORE</button>
+        <button type="button" class="nav-btn" data-view="operations">OPERATIONS</button>
+        <button type="button" class="nav-btn" data-view="diagnostics">DIAGNOSTICS</button>
+      </nav>
+
+      <div class="header-actions">
+        <div class="system-pill">
+          <span class="pill-label">LINK</span>
+          <span id="statusIndicator" class="pill-value">STANDBY</span>
+        </div>
+        <button id="wakeBtn" type="button" class="wake-btn" onclick="toggleListening()">
+          <span class="mic-dot"></span>
+          <span id="wakeBtnLabel">ENGAGE VOICE</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="hud-overlay">
+      <section class="hero-hud">
+        <div class="eyebrow">
+          <span class="amber-tag">// MK-VII AUTONOMOUS INTERFACE</span>
+        </div>
+
+        <h1 class="hero-title">
+          J.A.R.V.I.S<span class="amber-dot">.</span>
+        </h1>
+
+        <p class="hero-desc">
+          Minimalist holographic intelligence engineered for real-time voice synthesis and OS-level file execution.
+        </p>
+
+        <!-- Sleek Hairline Telemetry & Command Console -->
+        <div class="telemetry-console">
+          <div class="console-top">
+            <span class="console-tag">// TELEMETRY STREAM</span>
+            <div class="waveform" id="waveform" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <div class="telemetry-grid">
+            <div class="telemetry-item">
+              <span class="t-label">INPUT TRANSCRIPT</span>
+              <p id="userText" class="t-value">Awaiting voice or text directive...</p>
+            </div>
+            <div class="telemetry-item">
+              <span class="t-label amber">J.A.R.V.I.S. RESPONSE</span>
+              <p id="jarvisText" class="t-value response">All neural and file subsystems nominal, sir.</p>
+            </div>
+          </div>
+
+          <!-- Optional Direct Text Command Input (complements Voice Recognition) -->
+          <form id="commandForm" class="command-bar" autocomplete="off">
+            <span class="prompt-chevron">&gt;</span>
+            <input
+              id="commandInput"
+              type="text"
+              placeholder="Enter directive or use voice (e.g., Rename test.txt to updated-test.txt)..."
+              aria-label="Command directive"
+            />
+            <button type="submit" class="send-btn" title="Execute Directive">EXEC</button>
+          </form>
+        </div>
+      </section>
+
+      <aside id="hudDrawer" class="hud-drawer" aria-hidden="true">
+        <div class="drawer-header">
+          <span id="drawerTitle" class="drawer-title">// FILE OPERATIONS</span>
+          <button type="button" id="closeDrawerBtn" class="drawer-close" aria-label="Close panel">✕</button>
+        </div>
+
+        <div id="view-operations" class="drawer-body">
+          <p class="drawer-intro">
+            Active Gemini Function Calling tools bound to local filesystem execution:
+          </p>
+          <div class="tool-list">
+            <div class="tool-item">
+              <span class="tool-name">rename_file</span>
+              <span class="tool-desc">Rename or relocate local files</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">move_file</span>
+              <span class="tool-desc">Transfer files across directories</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">copy_file</span>
+              <span class="tool-desc">Duplicate files to target paths</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">delete_file</span>
+              <span class="tool-desc">Remove specified file targets</span>
+            </div>
+          </div>
+
+          <div class="drawer-section-label">// QUICK DIRECTIVES</div>
+          <div class="quick-prompts">
+            <button type="button" class="chip-btn" data-prompt="Hello Jarvis, report system status.">
+              Report system status
+            </button>
+            <button type="button" class="chip-btn" data-prompt="Rename test.txt to updated-test.txt">
+              Rename test.txt → updated-test.txt
+            </button>
+            <button type="button" class="chip-btn" data-prompt="Copy updated-test.txt to backup-test.txt">
+              Copy updated-test.txt → backup-test.txt
+            </button>
+          </div>
+
+          <div class="drawer-section-label">// EXECUTION LOG</div>
+          <ul id="activityLog" class="activity-log">
+            <li><span class="log-time">[BOOT]</span> Neural particle core initialized.</li>
+          </ul>
+        </div>
+
+        <div id="view-diagnostics" class="drawer-body hidden">
+          <div class="diag-grid">
+            <div class="diag-card">
+              <span class="diag-label">CORE PARTICLES</span>
+              <span class="diag-val cyan" id="diagParticles">4,100</span>
+            </div>
+            <div class="diag-card">
+              <span class="diag-label">RENDER RATE</span>
+              <span class="diag-val amber" id="diagFps">60 FPS</span>
+            </div>
+            <div class="diag-card">
+              <span class="diag-label">SPEECH ENGINE</span>
+              <span class="diag-val" id="diagSpeech">READY</span>
+            </div>
+            <div class="diag-card">
+              <span class="diag-label">VOICE SYNTHESIS</span>
+              <span class="diag-val amber">FISH AUDIO MCU</span>
+            </div>
+          </div>
+          <p class="drawer-intro" style="margin-top: 16px;">
+            Cursor perturbation field active. Hover anywhere across the viewport to displace outer cyan nodes and energize the inner Stark amber core.
+          </p>
+        </div>
+      </aside>
+    </main>
+
+    <div class="interaction-hint" aria-hidden="true">
+      MOVE CURSOR TO PERTURB CORE <span class="sep">//</span> CLICK VOICE TO SPEAK
+    </div>
+
+    <audio id="audioPlayer" style="display: none;"></audio>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
